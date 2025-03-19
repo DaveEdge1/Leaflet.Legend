@@ -148,6 +148,35 @@
         }
     }
 
+    class StarSymbol extends GeometricSymbol {
+        _drawSymbol() {
+            var ctx = (this._ctx = this._canvas.getContext("2d"));
+
+            var linelWeight = this._legend.weight || 3;
+            var rot=Math.PI/2*3;
+            var outerRadius = this._control.options.symbolWidth / 2;
+            var innerRadius = outerRadius / 2;
+            var x = this._control.options.symbolWidth / 2;
+            var y = this._control.options.symbolHeight / 2;
+            var step=Math.PI/this._legend.sides;
+            ctx.beginPath();
+            ctx.moveTo(cx,cy-outerRadius)
+              for(i=0;i<this._legend.sides;i++){
+                x=cx+Math.cos(rot)*outerRadius;
+                y=cy+Math.sin(rot)*outerRadius;
+                ctx.lineTo(x,y)
+                rot+=step
+        
+                x=cx+Math.cos(rot)*innerRadius;
+                y=cy+Math.sin(rot)*innerRadius;
+                ctx.lineTo(x,y)
+                rot+=step
+              }
+          ctx.lineTo(cx,cy-outerRadius);
+          ctx.closePath();
+        }
+    }
+
     class PolygonRSymbol extends GeometricSymbol {
         _drawSymbol() {
             var ctx = (this._ctx = this._canvas.getContext("2d"));
@@ -281,6 +310,8 @@
                 legendSymbol = new RectangleSymbol(this, symbolContainer, legend);
             } else if (legend.type === "polygon") {
                 legendSymbol = new PolygonSymbol(this, symbolContainer, legend);
+            } else if (legend.type === "star") {
+                legendSymbol = new starSymbol(this, symbolContainer, legend);
             } else if (legend.type === "polygonR") {
                 legendSymbol = new PolygonRSymbol(this, symbolContainer, legend);
             } else if (legend.type === "polyline") {
